@@ -98,7 +98,9 @@ And then, one morning... PrimeSense Kinect! (~150 pounds)
     \begin{itemize}
         \item Stereo-vision
         \item Structured light
+        \item Speckle decorrelation
         \item Time-of-Flight
+        \item (...several other like coded-aperture)
     \end{itemize}
 \end{frame}
 
@@ -217,9 +219,11 @@ d &= EF + GH \\
 \imageframe[color=black]{kinect_pattern}
 \imageframe[color=black]{kinect_pattern2}
 
-\begin{frame}{Structured light}
+\begin{frame}{Multiscale pattern}
     \begin{center}
-        \includegraphics[width=0.8\linewidth]{structured_light}
+        \includegraphics[width=0.8\linewidth]{multiscale_kinect_pattern}\\
+        \includegraphics[width=0.5\linewidth]{kinect_pattern2}
+
     \end{center}
 \end{frame}
 
@@ -230,6 +234,29 @@ d &= EF + GH \\
     \end{center}
 \end{frame}
 
+\begin{frame}{Comparison of cameras}
+    \begin{table}[]
+        \centering
+        \scriptsize
+        \begin{tabular}{@{}lllll@{}}
+            \toprule
+                             & Kinect 360 (v1)        & Kinect One (v2)   &
+            Intel RealSense SR300 & Intel RealSense R200        \\ \midrule
+            Range            & 0.6m -- \textgreater5m & 1.37m -- 8m?      & 0.2m
+            – 1.6m           & 0.6m -- 3.5m (10m outdoors) \\
+            Price (new)      & £230                   & £118              & £66 & £66                         \\
+            Depth resolution & 640x480px, 11bits      & 512x424px, 13bits & 640x480               & 640x480                     \\
+            On Linux?        & libfreenect/OpenNI1    & libfreenect2      &
+            standard UVC camera   & standard UVC camera         \\
+            horizontal FoV   & 57                     & 70                & 77
+            & 77                          \\
+            vertical FoV     & 43                     & 60                & 43
+            & 47                          \\
+            Microphones?     & 4                      & 4                 & 2
+            & 0                           \\ \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -360,8 +387,9 @@ The computational steps for two datasets are straighforward:
 
 \begin{frame}{Body parts}
 
-    Train a decision tree from \approx 1M samples, computer-generated from
-    \approx 100K acquired pairs (depth image, motion capture).
+    {\Medium Train a decision tree} from \approx 1M samples, computer-generated from
+    \approx 100K acquired pairs (depth image, motion capture). This allow
+    {\Medium tagging} of body parts in the depth image.
 
     \begin{center}
         \includegraphics[width=0.8\linewidth]{skeleton/training}
@@ -369,10 +397,68 @@ The computational steps for two datasets are straighforward:
 \end{frame}
 }
 
-\begin{frame}{Postures}
+\begin{frame}{Skeleton}
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{skeleton/skel4}\\
+        \includegraphics[width=0.8\linewidth]{skeleton/skel5}
+    \end{center}
 \end{frame}
 
+\begin{frame}{}
+    \centering
+    What to do with a skeleton?
+\end{frame}
+
+\begin{frame}{Cartesian space, joint space}
+    \begin{center}
+        \includegraphics[width=0.45\linewidth]{skeleton/skeleton}
+        \includegraphics[width=0.45\linewidth]{human_joints}
+
+        Joints values to cartesian positions: {\Medium forward kinematics}
+        Cartesian positions to joints: {\Medium inverse kinematics}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}{Recognizing postures}
+\end{frame}
+
+
+{\paper{Images source: http://www.creativedistraction.com}
 \begin{frame}{Gestures}
+    \begin{center}
+        \includegraphics[width=0.5\linewidth]{gesture-ideal}
+        \includegraphics<2>[width=0.5\linewidth]{gesture-real}
+    \end{center}
+\end{frame}
+}
+
+
+{
+\paper{Image source: Tdunning, CC-BY 3.0}
+\begin{frame}{Hidden Markov Models}
+    \begin{center}
+        \includegraphics[width=0.5\linewidth]{hmm}
+    \end{center}
+    \only<1>{
+    States: $s_1, s_2,...s_n$ {\scriptsize (eg, step of the gesture)}\\
+    Observations: $o_1, o_2,...o_m$ {\scriptsize (eg, hand position)}\\
+    State transition probabilities: $a_{ij}$\\
+    Output probabilities: $b_{ij}$
+}
+\only<2>{
+    Probabilities are learnt from examples: {\Medium supervised training}
+
+    Very common for {\Medium temporal pattern recognition} (speech, handwriting,
+    gestures...)
+}
+
+\end{frame}
+}
+
+\begin{frame}{Hidden Markov Models}
+    We'll leave it here, but for the curious:\\
+    \url{http://www.creativedistraction.com/demos/gesture-recognition-kinect-with-hidden-markov-models-hmms/}
 \end{frame}
 
 \begin{frame}{Attention}
