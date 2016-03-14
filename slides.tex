@@ -125,12 +125,12 @@ d &= EF + GH \\
 
     \only<1>{
     The disparity map is built by:
-    \begin{itemize}
-        \item 1) properly aligning the images ({\Medium
+    \begin{enumerate}
+        \item properly aligning the images ({\Medium
     image rectification}), 
-        \item 2) looking for the {\Medium disparity} of each pixel between
+        \item looking for the {\Medium disparity} of each pixel between
     the left and right images.
-    \end{itemize}
+    \end{enumerate}
     }
 
     \only<2>{
@@ -325,8 +325,47 @@ The computational steps for two datasets are straighforward:
 
 \section{Skeleton Tracking}
 
-\begin{frame}{Skeleton Tracking}
+\imageframe[color=black]{skeleton/skel1}
+
+{
+    \paper{Source: John MacCormick, Shotton et al., CVPR 2011}
+    \begin{frame}{Skeleton Tracking}
+
+        \begin{center}
+            \includegraphics[width=0.3\linewidth]{skeleton/skel3}
+            \includegraphics[width=0.3\linewidth]{skeleton/skel2}
+            \includegraphics<2>[width=0.3\linewidth]{skeleton/skel1}
+        \end{center}
 \end{frame}
+}
+
+{
+    \paper{Source: John MacCormick, Shotton et al., CVPR 2011}
+
+\begin{frame}{Skeleton estimation}
+    \begin{enumerate}
+        \item Estimate body parts using a randomized decision forest
+        \item Estimate the skeleton
+    \end{enumerate}
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{skeleton/skeleton_estimation}
+    \end{center}
+\end{frame}
+}
+
+{
+    \paper{Source: John MacCormick, Shotton et al., CVPR 2011}
+
+\begin{frame}{Body parts}
+
+    Train a decision tree from \approx 1M samples, computer-generated from
+    \approx 100K acquired pairs (depth image, motion capture).
+
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{skeleton/training}
+    \end{center}
+\end{frame}
+}
 
 \begin{frame}{Postures}
 \end{frame}
