@@ -25,7 +25,7 @@
 % General presentation settings
 %--------------------------------------------------------------------------
 \title{RGB-D Cameras for Human-Robot Interaction}
-\subtitle{...}
+\subtitle{~}
 \date{\today}
 \author{Séverin Lemaignan}
 \institute{Centre for Neural Systems and Robotics\\{\Medium Plymouth University}}
@@ -56,19 +56,21 @@
 
 \section{3D Perception for HRI}
 
-\imageframe{pr2-baby-3.jpg}
+\imageframe{pr2-baby-3}
 
 \begin{frame}{Situation Assessment}
-        \centering
-        \video{0.7\textwidth}{videos/model3d.webm?autostart&start=22}\\
-        \vspace*{1em}
-        \includegraphics[width=0.9\textwidth]{spark.pdf}
+
+    \centering
+    \includegraphics[width=\textwidth]{spark.pdf}
 \end{frame}
 
 \begin{frame}{Why not 2D?}
     3D interpretation of a 2D scene is hard!
 
     Resorts to fiducial markers
+
+        \centering
+        \video{\textwidth}{videos/model3d.webm?autostart&start=22}\\
 \end{frame}
 
 \begin{frame}{Perceiving the humans}
@@ -78,10 +80,10 @@ Previously,...
 \begin{itemize}
     \item face detection
     \item blob detection
-    \item motion capture (+10K pounds)
+    \item motion capture (£10K+)
 \end{itemize}
 
-And then, one morning... PrimeSense Kinect! (~150 pounds)
+And then, one morning... the Kinect! (\approx£120 pounds)
 
 \end{frame}
 
@@ -90,9 +92,6 @@ And then, one morning... PrimeSense Kinect! (~150 pounds)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{RGB-D cameras}
-
-\begin{frame}{Perception of depth}
-\end{frame}
 
 \begin{frame}{RGB-D cameras: many technologies}
     \begin{itemize}
@@ -227,12 +226,16 @@ d &= EF + GH \\
     \end{center}
 \end{frame}
 
+{
+\paper{Image source: Wikipedia}
 \begin{frame}{Time-of-Flight cameras}
     \begin{center}
         \includegraphics<1>[width=0.8\linewidth]{kinect_xbox_one}
-        \includegraphics<2>[width=0.8\linewidth]{tof1}
+        \includegraphics<2>[width=0.7\linewidth]{tof2}\\
+        \includegraphics<2>[width=0.7\linewidth]{tof1.pdf}
     \end{center}
 \end{frame}
+}
 
 \begin{frame}{Comparison of cameras}
     \begin{table}[]
@@ -240,20 +243,25 @@ d &= EF + GH \\
         \scriptsize
         \begin{tabular}{@{}lllll@{}}
             \toprule
-                             & Kinect 360 (v1)        & Kinect One (v2)   &
-            Intel RealSense SR300 & Intel RealSense R200        \\ \midrule
-            Range            & 0.6m -- \textgreater5m & 1.37m -- 8m?      & 0.2m
-            – 1.6m           & 0.6m -- 3.5m (10m outdoors) \\
-            Price (new)      & £230                   & £118              & £66 & £66                         \\
-            Depth resolution & 640x480px, 11bits      & 512x424px, 13bits & 640x480               & 640x480                     \\
-            On Linux?        & libfreenect/OpenNI1    & libfreenect2      &
-            standard UVC camera   & standard UVC camera         \\
-            horizontal FoV   & 57                     & 70                & 77
-            & 77                          \\
-            vertical FoV     & 43                     & 60                & 43
-            & 47                          \\
-            Microphones?     & 4                      & 4                 & 2
-            & 0                           \\ \bottomrule
+                             & Kinect 360 (v1)        & Kinect One (v2)   \\ \midrule
+            {\Medium Range}            & 0.6m -- \textgreater5m & 1.37m -- 8m?      \\
+            {\Medium Price (new)}      & £230                   & £118               \\
+            {\Medium Depth resolution} & 640x480px, 11bits      & 512x424px, 13bits  \\
+            {\Medium Libraries}        & libfreenect/OpenNI1    & libfreenect2       \\
+            {\Medium horizontal FoV}   & 57                     & 70                 \\
+            {\Medium vertical FoV}     & 43                     & 60                 \\
+            {\Medium Microphones?}     & 4                      & 4                 \\ \bottomrule
+        \end{tabular}
+        \begin{tabular}{@{}lllll@{}}
+            \toprule
+                             & Intel RealSense SR300 & Intel RealSense R200        \\ \midrule
+            {\Medium Range}            & 0.2m – 1.6m           & 0.6m -- 3.5m (10m outdoors) \\
+            {\Medium Price (new)}      & £66 & £66                         \\
+            {\Medium Depth resolution} & 640x480               & 640x480                     \\
+            {\Medium Libraries}        & librealsense   & librealsense         \\
+            {\Medium horizontal FoV}   & 77 & 77                          \\
+            {\Medium vertical FoV}     & 43 & 47                          \\
+            {\Medium Microphones?}     & 2 & 0                           \\ \bottomrule
         \end{tabular}
     \end{table}
 \end{frame}
@@ -286,10 +294,55 @@ d &= EF + GH \\
 
 \section{Algorithms for point clouds}
 
-\begin{frame}{Template matching}
-ICP, RANSAC
+\begin{frame}{Two fundamental algorithms}
+\centering
+{\Medium ICP}: Iterative Closest Point, \\
+{\Medium RANSAC}: RANdom SAmple Consensus 
 \end{frame}
 
+
+\begin{frame}{Iterative Closest Point (ICP)}
+
+    Purpose: align to sets of points -- more precisely: {\Medium iteratively}
+    estimate the {\Medium rigid transformation} between two point clouds.
+
+    \begin{center}
+        \includegraphics[width=\linewidth]{icp}
+    \end{center}
+\end{frame}
+
+{
+\paper{Source: PCL documentation}
+\begin{frame}{RANdom SAmple Consensus (RANSAC)}
+    
+    Iterative algorithm that tries
+    to {\Medium fit a parametric model} of a point distribution to
+    observations. The result is an {\Medium estimation of the model's free
+    parameters}.
+
+    \begin{multicols}{2}
+    
+    \footnotesize
+    \begin{enumerate}
+        \item take a random subset of the data; assume they are {\Medium inliers}; fit the model;
+        \item test the other observations against the fitted model;
+        \item if enough points are classified as inliers, return the model; otherwise go to 1.
+    \end{enumerate}
+
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{ransac_outliers_plane}
+    \end{center}
+    \end{multicols}
+
+    \uncover<2>{
+        Robust to {\Medium outliers}, but no guarantee of optimality
+    }
+
+\end{frame}
+}
+
+{
+\paper{Source: PCL documentation}
 \begin{frame}{Point clouds registration}
     \begin{center}
         \includegraphics<1>[width=\linewidth]{scans}
@@ -301,7 +354,10 @@ ICP, RANSAC
         sensor between scans.
     }
 \end{frame}
+}
 
+{
+\paper{Source: PCL documentation}
 \begin{frame}{Registration algorithm}
 
         \begin{center}
@@ -333,6 +389,26 @@ The computational steps for two datasets are straighforward:
 \end{itemize}
     }
 \end{frame}
+}
+
+{
+\paper{Source: PCL documentation}
+\begin{frame}{Features?}
+    \begin{center}
+        \includegraphics[width=\linewidth]{good_features}
+    \end{center}
+
+    \uncover<2>{
+    Good features should be:
+
+    \begin{itemize}
+        \item invariant over transformations,
+        \item invariant over sampling densing,
+        \item robust to noise
+    \end{itemize}
+}
+\end{frame}
+}
 
 \begin{frame}{Plane segmentation}
 \end{frame}
