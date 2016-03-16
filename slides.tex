@@ -103,6 +103,8 @@ And then, one morning... the Kinect! (\approx£120 pounds)
     \end{itemize}
 \end{frame}
 
+\imageframe{depthmap}
+
 \imageframe{stereo_head}
 
 \begin{frame}{Stereo-vision: principle}
@@ -173,14 +175,29 @@ d &= EF + GH \\
     \begin{frame}{Structured light}
         \centering
         \only<1>{
+            \begin{multicols}{2}
+                \includegraphics[height=0.75\paperheight]{structured_light}
+
+
+
+                \includegraphics[width=0.8\columnwidth]{structured_light_gray_code}
+
+                Gray code
+                \vspace{1cm}
+
+                \includegraphics[width=\linewidth]{f200_module_simple}
+\end{multicols}
+}
+        \only<2>{
+
             \video{0.8\linewidth}{videos/structured_light.mp4}
         }
-        \only<2>{
+        \only<3>{
 
 
             \includegraphics[width=0.8\linewidth]{structured_light_schema}
         }
-        \only<3>{
+        \only<4>{
 
             \video{0.8\linewidth}{videos/structured_light.mp4}
 
@@ -231,8 +248,17 @@ d &= EF + GH \\
 \begin{frame}{Time-of-Flight cameras}
     \begin{center}
         \includegraphics<1>[width=0.8\linewidth]{kinect_xbox_one}
-        \includegraphics<2>[width=0.7\linewidth]{tof2}\\
-        \includegraphics<2>[width=0.7\linewidth]{tof1.pdf}
+
+        \includegraphics<2>[width=0.7\linewidth]{tof2}
+
+        \includegraphics<2->[width=0.7\linewidth]{tof1.pdf}
+
+        \only<3->{
+            $t_D = 2 \cdot \frac{D}{c} = 2 \cdot \frac{2.5m}{300000000\frac{m}{s}} = 0.00000001666s = 16.66ns$
+        }
+        \only<4>{
+            $D = \frac{1}{2} \cdot c \cdot t_0 \cdot \frac {S2} {S1 + S2}$
+        }
     \end{center}
 \end{frame}
 }
@@ -270,23 +296,31 @@ d &= EF + GH \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Processing the depth image}
-
-\begin{frame}{RGB-D registration}
-\end{frame}
 
 \begin{frame}{Point clouds}
+    The (2D) depth image is usually converted to a (3D) point cloud:
+
+    $Z = depthmap(x,y)$
+
+    $X = \frac{x-c_x}{Z-f_x}$
+
+    $Y = \frac{x-c_y}{Z-f_y}$
+
+    with $c_x, c_y$ the optical center of the depth camera and $f_x, f_y$ the focal lenght of the depth camera ({\Medium intrisic parameters} of the camera).
 \end{frame}
 
-\begin{frame}{Surface reconstruction}
+\imageframe[color=black]{pointcloud}
+
+\begin{frame}{RGB-D registration}
+    \begin{center}
+        \includegraphics<1>[width=0.45\linewidth]{registration-rgb}
+        \includegraphics<1>[width=0.45\linewidth]{registration-depth}
+
+        \includegraphics<2>[height=0.8\paperheight]{stereo}
+
+        \includegraphics<3>[width=0.8\linewidth]{registration-registered}
+    \end{center}
 \end{frame}
-
-\begin{frame}{The typical pipeline}
-    Example from ROS?
-
-    One major library: the Point Cloud Library (PCL)
-\end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -306,9 +340,19 @@ d &= EF + GH \\
     Purpose: align to sets of points -- more precisely: {\Medium iteratively}
     estimate the {\Medium rigid transformation} between two point clouds.
 
+    \only<1>{
     \begin{center}
         \includegraphics[width=\linewidth]{icp}
     \end{center}
+    }
+    \only<2>{
+    \begin{enumerate}
+        \item for each point in the source cloud, find the closest point in the target cloud
+        \item estimate the transformation, trying to minimize the error
+        \item transform the source cloud
+        \item iterate
+    \end{enumerate}
+    }
 \end{frame}
 
 {
@@ -410,19 +454,20 @@ The computational steps for two datasets are straighforward:
 \end{frame}
 }
 
+\begin{frame}{SLAM: Simultaneous Localization And Mapping}
+
+    \begin{center}
+        \includegraphics[width=\linewidth]{slam1}
+    \end{center}
+\end{frame}
+
+\imageframe[color=black]{slam2}
+\imageframe[color=black]{slam3}
+
 \begin{frame}{Plane segmentation}
+    \centering
+    \video{\linewidth}{videos/planar_segmentation.mp4}
 \end{frame}
-
-\begin{frame}{Object segmentation}
-\end{frame}
-
-\begin{frame}{Octrees}
-
-\end{frame}
-
-\begin{frame}{Skeleton tracking}
-\end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -497,6 +542,13 @@ The computational steps for two datasets are straighforward:
 
 
 \begin{frame}{Recognizing postures}
+    \centering
+    {\Medium Support Vector Machine} (SVM) in joint space
+    $\Rightarrow$ supervised training
+
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{svm}
+    \end{center}
 \end{frame}
 
 
@@ -538,25 +590,23 @@ The computational steps for two datasets are straighforward:
 \end{frame}
 
 \begin{frame}{Attention}
+    \begin{center}
+        \includegraphics[width=0.9\linewidth]{field_of_attention}
+    \end{center}
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{}
+    \begin{center}
+        \Large
+        That's all, folk!\\[2em]
+        \normalsize
+        Questions:\\
+        Portland Square A216 or \url{severin.lemaignan@plymouth.ac.uk} \\[1em]
 
-\section{One example: greetings recognizer}
-
-\begin{frame}{Recognizing hand waving}
-    \begin{itemize}
-        \item Acquiring a depth image
-        \item Extracting the skeleton
-        \item Conversion to joint space
-        \item Implementating an HMM
-        \item Classifying incoming gestures
-    \end{itemize}
+        Slides:\\ \url{github.com/severin-lemaignan/lecture-rgbd-cameras-hri}
+    \end{center}
 \end{frame}
-
 
 \end{document}
 
